@@ -1,0 +1,10 @@
+.inv-table-container {
+  position: relative;
+}
+
+.inv-btn-add {
+  position: absolute;
+  $button-size: 58px;
+  top: - $button-size / 2;
+  right: - $button-size / 2;
+}

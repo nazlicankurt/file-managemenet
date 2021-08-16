@@ -1,0 +1,51 @@
+<form [formGroup]="form"
+      novalidate
+      (ngSubmit)="submit()">
+  <h1 mat-dialog-title>Shipping Information</h1>
+  <div mat-dialog-content
+       class="dialog-content">
+    <div fxLayout="row"
+         fxLayoutGap="15px">
+      <mat-form-field color="accent"
+                      fxFlex="70">
+        <input matInput
+               placeholder="Name"
+               formControlName="name"
+               data-id="input-new-item-name">
+        <mat-error *ngIf="form.hasError('required', 'name')">
+          Name is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field color="accent"
+                      fxFlex="30">
+        <input matInput
+               type="number"
+               placeholder="Invoice Number"
+               formControlName="invoiceNumber"
+               data-id="input-new-item-amount">
+        <mat-error *ngIf="form.hasError('required', 'invoiceNumber')">
+          Invoice Number is <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="form.getError('min', 'invoiceNumber') as err">
+          Invoice Number must be higher than <strong>{{err.min}}</strong>
+        </mat-error>
+      </mat-form-field>
+      <form>
+        <input type="file" (change)="save($event)">
+        <br>
+        <span [innerHTML]="result"></span>
+    </form>
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <div class="w-100"
+         fxLayoutAlign="end">
+      <button mat-raised-button
+              color="primary"
+              type="submit"
+              data-id="btn-new-item-submit">
+        Submit
+      </button>
+    </div>
+  </div>
+</form>
