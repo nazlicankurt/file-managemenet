@@ -1,14 +1,14 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { first, takeUntil } from 'rxjs/operators';
 import { TableWithActionDisplayColumns } from '../common/model/table.model';
-import { DocumentItemStore } from '../store-ngrx/document-item.store';
-import { DocumentDialogComponent } from './document-dialog/document-dialog.component';
 import { DocumentItem, DocumentItemCreate } from './document.model';
 import { BaseComponent } from '../common/util/component.util';
+import { DocumentService } from './document.service';
+import { DocumentDialogComponent } from './document-dialog/document-dialog.component';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'inv-document',
@@ -16,6 +16,7 @@ import { BaseComponent } from '../common/util/component.util';
   styleUrls: ['./document.component.scss'],
 })
 export class DocumentComponent  extends BaseComponent implements OnInit {
+  doc : DocumentItem[];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   dataSource = new MatTableDataSource<DocumentItem>();
@@ -24,42 +25,42 @@ export class DocumentComponent  extends BaseComponent implements OnInit {
   displayedColumns: TableWithActionDisplayColumns<DocumentItem> = [
     'id',
     'name',
-    'lastUpdatedAt',
+    'fileName',
+    'length',
+    'contentType',
     'actions',
   ];
   constructor(
-    private matDialog: MatDialog,
-    private itemStore: DocumentItemStore
+    private dialog: MatDialog,
+    private http: HttpClient,
+    private service: DocumentService,
+    private changeDetectorRefs: ChangeDetectorRef
   ) {
     super();
   }
-
   ngOnInit(): void {
-    this.itemStore.entities$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((items) => (this.dataSource.data = items));
+this.fetchData();
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-  }
+  openDialog() {
+    this.dialog.open<DocumentDialogComponent, null, DocumentItemCreate>(DocumentDialogComponent)
+    .afterClosed().subscribe(result => {
+      this.fetchData();
+    }); }
+    fetchData() {
+      this.service.getAllDoc().subscribe(
+        (res) => {this.dataSource.data =res as DocumentItem[]
+      })
 
-  openItemDialog(): void {
-    this.matDialog
-      .open<DocumentDialogComponent, null, DocumentItemCreate>(
-        DocumentDialogComponent
-      )
-      .afterClosed()
-      .pipe(first())
-      .subscribe((item) => {
-        if (item !== undefined && item !== null) {
-          this.itemStore.add(item);
-        }
-      });
-  }
 
+
+    }
   removeItem(id: number): void {
-    this.itemStore.remove(id);
-  }
+    this.service.delete(id).subscribe(()=> {
+      this.fetchData();
+  });
 }
+}
+
+
+

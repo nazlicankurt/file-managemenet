@@ -1,44 +1,44 @@
-import { Component, OnInit } from '@angular/core';
-import { Validators, FormBuilder } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { DocumentItemCreate } from '../document.model';
 
 
 @Component({
   selector: 'inv-document-dialog',
   templateUrl: './document-dialog.component.html',
-  styleUrls: ['./document-dialog.component.scss']
+  styleUrls: ['./document-dialog.component.scss'],
 })
-export class DocumentDialogComponent implements OnInit {
-
+export class DocumentDialogComponent {
   form = this.formBuilder.group({
     name: [null, Validators.required],
-    invoiceNumber: [null, [Validators.required, Validators.min(0)]]
   });
+  fileToUpload: any;
+  constructor(
+    private formBuilder: FormBuilder,
+    private http: HttpClient,
+    public dialogRef: MatDialogRef<DocumentDialogComponent>,
 
-  constructor(private dialogRef: MatDialogRef<DocumentDialogComponent, DocumentItemCreate>,
-              private formBuilder: FormBuilder) {}
-  ngOnInit(): void {
-    var a;
-   return a;
+
+  ) {}
+
+  handleFileInput(e: any) {
+    this.fileToUpload = e?.target?.files[0];
   }
+  submit() {
 
-  submit(): void {
-    if (this.form.invalid) { return; }
-    const result = this.form.getRawValue();
-    this.dialogRef.close(result);
+    const formData: FormData = new FormData();
+
+    formData.append('file', this.fileToUpload);
+    formData.append('name', this.form.value.name);
+    return this.http
+      .post('http://localhost:18000/api/v1/Document/AddNewDocument', formData, {
+        headers: new HttpHeaders(),
+      })
+
+      .subscribe(() => this.dialogRef.close(this.form.valid)
+
+     );
+
   }
-  result: string = '';
-
-
-  save(event: any): void {
-    var selectedFile = event.target.files[0];
-    this.result = 'File Name: ' + selectedFile.name;
-    console.log("File : ", selectedFile)
-    this.result += '<br>File Size: ' + selectedFile.size;
-    this.result += '<br>File Type: ' + selectedFile.type;
-  }
-
-
-
 }

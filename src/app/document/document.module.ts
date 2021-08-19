@@ -12,7 +12,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
+import { MatFormFieldModule } from "@angular/material/form-field";
 import { DocumentDialogComponent } from './document-dialog/document-dialog.component';
 import { DocumentComponent } from './document.component';
 
@@ -37,6 +37,9 @@ import { DocumentComponent } from './document.component';
     MatDialogModule,
     MatChipsModule,
     MatTooltipModule,
+    MatFormFieldModule,
+    
+
 
 
   ]

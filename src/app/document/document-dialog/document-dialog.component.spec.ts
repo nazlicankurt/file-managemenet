@@ -4,7 +4,6 @@ import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
 import { DocumentDialogComponent } from './document-dialog.component';
-import { DocumentItemCreate } from '../document.model';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,10 +13,10 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 describe('DocumentDialogComponent', () => {
   let component: DocumentDialogComponent;
   let fixture: ComponentFixture<DocumentDialogComponent>;
-  let matDialogRefSpy: jasmine.SpyObj<MatDialogRef<DocumentDialogComponent, DocumentItemCreate>>;
+  let matDialogRefSpy: jasmine.SpyObj<MatDialogRef<DocumentDialogComponent>>;
 
   beforeEach(waitForAsync(() => {
-    matDialogRefSpy = jasmine.createSpyObj<MatDialogRef<DocumentDialogComponent, DocumentItemCreate>>(
+    matDialogRefSpy = jasmine.createSpyObj<MatDialogRef<DocumentDialogComponent>>(
       'MatDialogRef',
       ['close']
     );
